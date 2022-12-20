@@ -1,9 +1,22 @@
 package com.javatpoint.server.main.user;
-
 import java.util.Date;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 public class User   
 {  
+	private Integer id;  
+	@Size(min=5, message="Name should have atleast 5 charcters.")
+	private String name;  
+	@Past (message="Date of Birth cannot be in future.")
+	private Date dob;  
+	
+	//default constructor     
+	protected User()  
+	{  
+	      
+	}  
+	
 public User(Integer id, String name, Date dob)   
 {  
 super();  
@@ -11,9 +24,7 @@ this.id = id;
 this.name = name;  
 this.dob = dob;  
 }  
-private Integer id;  
-private String name;  
-private Date dob;  
+
 public Integer getId()   
 {  
 return id;  
