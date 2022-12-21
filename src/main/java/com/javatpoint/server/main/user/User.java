@@ -1,9 +1,11 @@
 package com.javatpoint.server.main.user;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
@@ -23,6 +25,8 @@ public class User
 	@Past (message="Date of Birth cannot be in future.")
 	@ApiModelProperty(notes="Birth date should be in the past")
 	private Date dob;  
+	@OneToMany(mappedBy="user")  
+	private List<Post> posts;  
 	
 	//default constructor     
 	protected User()  
@@ -67,5 +71,13 @@ public String toString()
 {  
 //return "User [id=" + id + ", name=" + name + ", dob=" + dob + "]";  
 return String.format("User [id=%s, name=%s, dob=%s]", id, name, dob);  
+}
+
+public List<Post> getPosts() {
+	return posts;
+}
+
+public void setPosts(List<Post> posts) {
+	this.posts = posts;
 }  
 }  

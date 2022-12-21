@@ -22,9 +22,12 @@ public class UserJPAResource
 {
 @Autowired
 private UserDaoService service;
+//instance of user repository
 @Autowired
 private UserRepository userRepository;
-
+//instance of post repository
+@Autowired
+private PostRepository postRepository;
 //Retrieving all user from the userRepository
 @GetMapping("/jpa/users")
 public List<User> retriveAllUsers()
@@ -44,7 +47,6 @@ throw new UserNotFoundException("id: "+ id);
 return user;
 }
 */
-
 @GetMapping("/jpa/users/{id}")
 public Resource<User> retriveUser(@PathVariable int id)
 {
@@ -60,7 +62,6 @@ ControllerLinkBuilder linkTo=linkTo(methodOn(this.getClass()).retriveAllUsers())
 resource.add(linkTo.withRel("all-users"));
 return resource;
 }
-
 //method that delete a user resource
 @DeleteMapping("/jpa/users/{id}")
 public void deleteUser(@PathVariable int id)
@@ -71,8 +72,39 @@ userRepository.deleteById(id);
 @PostMapping("/jpa/users")
 public ResponseEntity<Object> createUser(@Valid @RequestBody User user)	
 {
-User sevedUser=userRepository.save(user);	
+User sevedUser=service.save(user);	
 URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(sevedUser.getId()).toUri();
+return ResponseEntity.created(location).build();
+}
+//Retrieving all posts of a specific user
+@GetMapping("/jpa/users/{id}/posts")
+public List<Post> retriveAllUsers(@PathVariable int id)
+{
+Optional<User> userOptional= userRepository.findById(id);
+if(!userOptional.isPresent())
+{
+throw new UserNotFoundException("id: "+ id);
+}
+return userOptional.get().getPosts();
+}
+//creating a post for the specific  user
+@PostMapping("/jpa/users/{id}/posts")
+public ResponseEntity<Object> createUser(@PathVariable int id, @RequestBody Post post)	
+{
+Optional<User> userOptional= userRepository.findById(id);
+if(!userOptional.isPresent())
+{
+throw new UserNotFoundException("id: "+ id);
+}
+//getting a user variable
+User user=userOptional.get();	
+//map the user to the post
+post.setUser(user);
+//save post to the database
+postRepository.save(post);
+//getting the path of the post and append id of the post to the URI 
+URI location=ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(post.getId()).toUri();
+//returns the location of the created post
 return ResponseEntity.created(location).build();
 }
 }
