@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.Past;
@@ -17,8 +18,8 @@ import io.swagger.annotations.ApiModelProperty;
 public class User   
 {  
 	@Id
-	@GeneratedValue
-	private Integer id;  
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;  
 	@Size(min=5, message="Name should have atleast 5 charcters.")
 	@ApiModelProperty (notes="name should have atleast 5 characters")
 	private String name;  
@@ -73,11 +74,11 @@ public String toString()
 return String.format("User [id=%s, name=%s, dob=%s]", id, name, dob);  
 }
 
-public List<Post> getPosts() {
-	return posts;
-}
-
-public void setPosts(List<Post> posts) {
-	this.posts = posts;
-}  
+//public List<Post> getPosts() {
+//	return posts;
+//}
+//
+//public void setPosts(List<Post> posts) {
+//	this.posts = posts;
+//}  
 }  
